@@ -19,7 +19,7 @@ export const authAPI = {
     const formData = new FormData();
     formData.append('username', username);
     formData.append('password', password);
-    
+
     const response = await api.post('/auth/login', formData);
     return response.data;
   },
@@ -59,6 +59,16 @@ export const productAPI = {
 
   getBrands: async () => {
     const response = await api.get('/products/brands');
+    return response.data;
+  },
+
+  getFeatured: async () => {
+    const response = await api.get('/products/featured');
+    return response.data;
+  },
+
+  getTrending: async () => {
+    const response = await api.get('/products/trending');
     return response.data;
   },
 };
