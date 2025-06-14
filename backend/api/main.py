@@ -499,6 +499,11 @@ async def startup_event():
     finally:
         db.close()
 
+
+@app.get("/")
+def read_root():
+    return {"message": "Hello from FastAPI on Vercel!"}
+
 # Auth endpoints
 @app.post("/auth/register", response_model=Token)
 async def register(user: UserCreate, db: Session = Depends(get_db)):
