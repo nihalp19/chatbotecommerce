@@ -1,19 +1,23 @@
-import React, { useEffect, useRef } from 'react';
-import { MessageCircle, RotateCcw, LogOut } from 'lucide-react';
+import React, { useEffect, useRef, useState } from 'react';
+import { MessageCircle, RotateCcw, LogOut, ArrowLeft } from 'lucide-react';
 import { ChatMessage } from './ChatMessage';
 import { ChatInput } from './ChatInput';
+import { ProductSelection } from '../product/ProductSelection';
 import { useAuthStore } from '../../stores/authStore';
 import { useChatStore } from '../../stores/chatStore';
 
 export function ChatWindow() {
+  const [showProductSelection, setShowProductSelection] = useState(true);
   const messagesEndRef = useRef(null);
   const { user, logout } = useAuthStore();
   const { messages, resetChat } = useChatStore();
 
   useEffect(() => {
-    // Initialize chat with welcome message
-    resetChat(user?.username);
-  }, [user, resetChat]);
+    if (!showProductSelection) {
+      // Initialize chat with welcome message when entering chat mode
+      resetChat(user?.username);
+    }
+  }, [showProductSelection, user, resetChat]);
 
   useEffect(() => {
     scrollToBottom();
@@ -23,15 +27,35 @@ export function ChatWindow() {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   };
 
+  const handleStartChat = () => {
+    setShowProductSelection(false);
+  };
+
+  const handleBackToProducts = () => {
+    setShowProductSelection(true);
+  };
+
   const handleReset = () => {
     resetChat(user?.username);
   };
+
+  if (showProductSelection) {
+    return <ProductSelection onStartChat={handleStartChat} />;
+  }
 
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col">
       {/* Header */}
       <div className="bg-white border-b border-gray-200 px-6 py-4 flex items-center justify-between">
         <div className="flex items-center space-x-3">
+          <button
+            onClick={handleBackToProducts}
+            className="flex items-center space-x-2 px-3 py-2 text-gray-600 hover:text-gray-800 hover:bg-gray-100 rounded-lg transition-colors"
+          >
+            <ArrowLeft className="w-4 h-4" />
+            <span className="hidden sm:inline">Products</span>
+          </button>
+          
           <div className="bg-blue-100 p-2 rounded-full">
             <MessageCircle className="w-6 h-6 text-blue-600" />
           </div>
